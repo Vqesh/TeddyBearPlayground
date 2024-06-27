@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smugg Bear's Magical Playground</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #FFB6C1;
+            --background-color: #FFF0E0;
+            --text-color: #A0522D;
+            --night-primary-color: #4A0E4E;
+            --night-secondary-color: #A374D5;
+            --night-background-color: #1A1B41;
+            --night-text-color: #E0E0E0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 700px;
+            width: 90%;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            transition: color 0.5s ease;
+        }
+
+        .bear-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+        }
+
+        .bear-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .bear-image:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .bear-text {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            margin: 1.5rem 0;
+            font-weight: bold;
+            transition: color 0.5s ease;
+        }
+
+        .interaction-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .mood-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mood-button {
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 25px;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 0.7rem 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .mood-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #bearName {
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 20px;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #bearName:focus {
+            border-color: var(--primary-color);
+        }
+
+        .toggle-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .night-mode {
+            background-color: var(--night-background-color);
+        }
+
+        .night-mode .container {
+            background-color: #2C2C54;
+            box-shadow: 0 15px 40px rgba(255,255,255,0.1);
+        }
+
+        .night-mode h1 {
+            color: var(--night-secondary-color);
+        }
+
+        .night-mode .bear-text {
+            color: var(--night-text-color);
+        }
+
+        .night-mode .mood-button {
+            background-color: var(--night-secondary-color);
+            color: var(--night-primary-color);
+        }
+
+        .night-mode .mood-button:hover {
+            background-color: var(--night-primary-color);
+            color: var(--night-secondary-color);
+        }
+
+        .night-mode #bearName {
+            background-color: #3C3C74;
+            color: var(--night-text-color);
+            border-color: var(--night-secondary-color);
+        }
+
+        .night-mode #bearName::placeholder {
+            color: #B0B0B0;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f2d74e;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <label class="toggle-switch">
+            <input type="checkbox" id="nightModeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+    <div class="container">
+        <h1>Welcome to Smugg Bear's Playground!</h1>
+        <div class="bear-container">
+            <img src="Smugg.png" alt="Smugg cartoon bear" class="bear-image floating" id="bearImage">
+        </div>
+        <p class="bear-text" id="bearMessage">Hey there! I'm feeling pretty smug today!</p>
+        <div class="interaction-area">
+            <input type="text" id="bearName" placeholder="Give me a name!">
+            <div class="mood-buttons">
+                <button class="mood-button" onclick="changeMood('happy')">Make Happy</button>
+                <button class="mood-button" onclick="changeMood('sleepy')">Make Sleepy</button>
+                <button class="mood-button" onclick="changeMood('excited')">Make Excited</button>
+                <button class="mood-button" onclick="changeMood('smug')">Make Smug</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bearImage = document.getElementById('bearImage');
+        const bearMessage = document.getElementById('bearMessage');
+        const bearName = document.getElementById('bearName');
+        let currentName = "Smugg Bear";
+
+        function changeMood(mood) {
+            const messages = {
+                happy: `Yay! ${currentName} is beaming with joy!`,
+                sleepy: `Zzzz... Oh, sorry! ${currentName} was just taking a quick nap.`,
+                excited: `Wow! ${currentName} is super pumped! Let's go on an adventure!`,
+                smug: `Heh, ${currentName} knows something you don't!`
+            };
+            
+            bearMessage.textContent = messages[mood];
+            bearImage.style.transform = 'scale(1.1) rotate(' + (Math.random() * 10 - 5) + 'deg)';
+            setTimeout(() => bearImage.style.transform = '', 500);
+        }
+
+        bearName.addEventListener('input', function() {
+            currentName = this.value || "Smugg Bear";
+            bearMessage.textContent = `Hi, I'm ${currentName}! Nice to meet you!`;
+        });
+
+        bearImage.addEventListener('click', function() {
+            this.style.transform = 'scale(1.2) rotate(10deg)';
+            setTimeout(() => this.style.transform = '', 500);
+            bearMessage.textContent = `Hey, don't poke ${currentName}!`;
+        });
+    </script>
+</body>
+</html>
