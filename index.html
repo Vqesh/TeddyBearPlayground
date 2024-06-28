@@ -81,6 +81,7 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .mood-button {
@@ -160,6 +161,62 @@
         .pop {
             animation: pop 0.5s ease-out;
         }
+
+        /* New cute color picker styles */
+        .color-picker-container {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .color-picker-label {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .color-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .color-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .color-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .color-button.active {
+            border: 3px solid var(--secondary-color);
+        }
+
+        #dancingBear {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .dancing {
+            animation: dance 0.5s infinite;
+        }
     </style>
 </head>
 <body>
@@ -177,13 +234,26 @@
                 <button class="mood-button" onclick="changeMood('excited')">Make Excited</button>
                 <button class="mood-button" onclick="changeMood('smug')">Make Smug</button>
             </div>
+            <div class="color-picker-container">
+                <p class="color-picker-label">Change my color!</p>
+                <div class="color-buttons">
+                    <button class="color-button" style="background-color: #FF9A8B;" onclick="changeColor('#FF9A8B')"></button>
+                    <button class="color-button" style="background-color: #FAF0AF;" onclick="changeColor('#FAF0AF')"></button>
+                    <button class="color-button" style="background-color: #B2E5E0;" onclick="changeColor('#B2E5E0')"></button>
+                    <button class="color-button" style="background-color: #C9A7EB;" onclick="changeColor('#C9A7EB')"></button>
+                    <button class="color-button" style="background-color: #FFB3BA;" onclick="changeColor('#FFB3BA')"></button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <img src="Bear.png" alt="Dancing Bear" id="dancingBear" onclick="toggleDance()">
 
     <script>
         const bearImage = document.getElementById('bearImage');
         const bearMessage = document.getElementById('bearMessage');
         const bearName = document.getElementById('bearName');
+        const dancingBear = document.getElementById('dancingBear');
         let currentName = "Teddy Bear";
 
         function changeMood(mood) {
@@ -224,6 +294,54 @@
                     heart.remove();
                 }, 500);
             }
+        }
+
+        function changeColor(color) {
+            bearImage.style.filter = `hue-rotate(${getHueRotation(color)}deg) saturate(150%) brightness(110%)`;
+            document.querySelectorAll('.color-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.style.backgroundColor === color) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function getHueRotation(color) {
+            const hsl = rgbToHsl(hexToRgb(color));
+            return hsl[0] * 360;
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16),
+                parseInt(result[2], 16),
+                parseInt(result[3], 16)
+            ] : null;
+        }
+
+        function rgbToHsl(rgb) {
+            let r = rgb[0] / 255, g = rgb[1] / 255, b = rgb[2] / 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h, s, l];
+        }
+
+        function toggleDance() {
+            dancingBear.classList.toggle('dancing');
         }
     </script>
 </body>
